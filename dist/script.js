@@ -14014,6 +14014,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_slickTrack__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/slickTrack */ "./src/js/modules/slickTrack.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_gallery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/gallery */ "./src/js/modules/gallery.js");
+
+
 
 
 
@@ -14024,6 +14028,8 @@ window.addEventListener('DOMContentLoaded', () => {
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])();
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
   Object(_modules_slickTrack__WEBPACK_IMPORTED_MODULE_4__["default"])();
+  Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('2022-02-30');
+  Object(_modules_gallery__WEBPACK_IMPORTED_MODULE_6__["default"])();
 });
 
 /***/ }),
@@ -14128,6 +14134,41 @@ function forms() {
 
 /***/ }),
 
+/***/ "./src/js/modules/gallery.js":
+/*!***********************************!*\
+  !*** ./src/js/modules/gallery.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function gallery() {
+  const preview = document.querySelectorAll('.preview'),
+        body = document.querySelector('body');
+  preview.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      let url = item.outerHTML.split('works/')[1].split('" ')[0];
+      const prevWrapper = document.createElement('div');
+      prevWrapper.classList.add('prevWrapper');
+      body.prepend(prevWrapper);
+      prevWrapper.innerHTML = `
+                <img style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 80%;" src="assets/img/our_works/big_img/${url}">;
+            `;
+      prevWrapper.addEventListener('click', e => {
+        if (e.target != prevWrapper.querySelector('img')) {
+          prevWrapper.remove();
+        }
+      });
+    });
+  });
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (gallery);
+
+/***/ }),
+
 /***/ "./src/js/modules/modal.js":
 /*!*********************************!*\
   !*** ./src/js/modules/modal.js ***!
@@ -14143,6 +14184,9 @@ function modal() {
         modalBg = document.querySelector('.popup_engineer'),
         phoneLink = document.querySelectorAll('.phone_link'),
         popup = document.querySelector('.popup');
+  const id = setTimeout(() => {
+    showModal(modalBg);
+  }, 500000);
 
   function showAndCloseModal(showBtnSelector, BgSelector) {
     showBtnSelector.addEventListener('click', e => {
@@ -14150,21 +14194,29 @@ function modal() {
         e.preventDefault();
       }
 
-      BgSelector.style.display = 'block';
-      document.body.style.overflow = 'hidden';
+      showModal(BgSelector);
     });
     closeModalBtn.forEach(item => {
       item.addEventListener('click', () => {
-        BgSelector.style.display = 'none';
-        document.body.style.overflow = '';
+        closeModal(BgSelector);
       });
     });
     BgSelector.addEventListener('click', e => {
       if (e.target == BgSelector) {
-        BgSelector.style.display = 'none';
-        document.body.style.overflow = '';
+        closeModal(BgSelector);
       }
     });
+  }
+
+  function showModal(modalSelector) {
+    modalSelector.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    clearTimeout(id);
+  }
+
+  function closeModal(modalSelector) {
+    modalSelector.style.display = 'none';
+    document.body.style.overflow = ''; // clearTimeout(id);
   }
 
   showAndCloseModal(callSpecialistBtn, modalBg);
@@ -14436,6 +14488,67 @@ function tabs() {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (tabs);
+
+/***/ }),
+
+/***/ "./src/js/modules/timer.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/timer.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function timer(deadline) {
+  function getTimeRemaining(endtime) {
+    const diff = Date.parse(endtime) - Date.parse(new Date()),
+          days = Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours = Math.floor((diff - days * 1000 * 60 * 60 * 24) / (1000 * 60 * 60)),
+          minutes = Math.floor((diff - days * 1000 * 60 * 60 * 24 - hours * 1000 * 60 * 60) / (1000 * 60)),
+          seconds = Math.floor((diff - days * 1000 * 60 * 60 * 24 - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+    return {
+      'total': diff,
+      'days': days,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+    };
+  }
+
+  function zero(arg) {
+    if (arg >= 0 && arg < 10) {
+      return `0${arg}`;
+    } else {
+      return `${arg}`;
+    }
+  }
+
+  function setTime(endtime) {
+    const daysE = document.querySelector('#days'),
+          hoursE = document.querySelector('#hours'),
+          minutesE = document.querySelector('#minutes'),
+          secondsE = document.querySelector('#seconds'),
+          id = setInterval(update, 1000);
+    update();
+
+    function update() {
+      const t = getTimeRemaining(endtime);
+      daysE.innerHTML = zero(t.days);
+      hoursE.innerHTML = zero(t.hours);
+      minutesE.innerHTML = zero(t.minutes);
+      secondsE.innerHTML = zero(t.seconds);
+
+      if (t.total <= 0) {
+        clearInterval(id);
+      }
+    }
+  }
+
+  setTime(deadline);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (timer);
 
 /***/ }),
 
