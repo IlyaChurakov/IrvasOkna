@@ -6,7 +6,7 @@ function timer(deadline) {
             hours = Math.floor((diff - (days * 1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
             minutes = Math.floor((diff - (days * 1000 * 60 * 60 * 24) - (hours * 1000 * 60 * 60)) / (1000 * 60)),
             seconds = Math.floor((diff - (days * 1000 * 60 * 60 * 24) - (hours * 1000 * 60 * 60) - (minutes * 1000 * 60)) / 1000);
-
+        
         return {
             'total': diff,
             'days': days,
@@ -26,10 +26,10 @@ function timer(deadline) {
 
     function setTime(endtime) {
         const daysE = document.querySelector('#days'),
-            hoursE = document.querySelector('#hours'),
-            minutesE = document.querySelector('#minutes'),
-            secondsE = document.querySelector('#seconds'),
-            id = setInterval(update, 1000);
+              hoursE = document.querySelector('#hours'),
+              minutesE = document.querySelector('#minutes'),
+              secondsE = document.querySelector('#seconds'),
+              id = setInterval(update, 1000);
 
         update();
 

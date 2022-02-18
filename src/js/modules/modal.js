@@ -1,7 +1,5 @@
 function modal() {
 
-    
-
     const callSpecialistBtn = document.querySelector('.header_btn'),
           closeModalBtn = document.querySelectorAll('.popup_close'),
           modalBg = document.querySelector('.popup_engineer'),
@@ -10,7 +8,9 @@ function modal() {
 
     const id = setTimeout(() => {
         showModal(modalBg);
-    }, 500000);
+    }, 60000);
+
+    console.log();
 
     function showAndCloseModal(showBtnSelector, BgSelector) {
         showBtnSelector.addEventListener('click', (e) => {
@@ -44,7 +44,6 @@ function modal() {
     function closeModal(modalSelector) {
         modalSelector.style.display = 'none';
         document.body.style.overflow = '';
-        // clearTimeout(id);
     }
 
     showAndCloseModal(callSpecialistBtn, modalBg);

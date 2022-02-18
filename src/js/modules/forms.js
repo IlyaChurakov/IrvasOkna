@@ -24,8 +24,6 @@ function forms() {
 
     const forms = document.querySelectorAll('.form');
 
-    console.log(forms);
-
     const message = {
         loading: 'Загрузка...',
         success: 'Спасибо! Скоро мы с вами свяжемся',
@@ -49,7 +47,7 @@ function forms() {
             e.preventDefault();
 
             const statusMessage = document.createElement('div'),
-                    loading = document.createElement('div');
+                  loading = document.createElement('div');
             
             loading.textContent = message.loading;
 
@@ -64,15 +62,12 @@ function forms() {
                     object = {},
                     json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            console.log(json);
-
             formData.forEach((value, key) => {
                 object[key] = value;
             });
 
             postData('http://localhost:3000/requests', json) 
-            .then(data => {
-                console.log(data);
+            .then(() => {
                 statusMessage.textContent = message.success;
             })
             .catch(() => {

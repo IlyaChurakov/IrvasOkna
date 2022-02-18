@@ -542,6 +542,7 @@ textarea:focus {
   padding: 2rem 0;
   background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), color-stop(0%, #ebebeb), to(rgba(255, 255, 255, 0)));
   background: linear-gradient(180deg, #ebebeb 0%, #ebebeb 0%, rgba(255, 255, 255, 0) 100%);
+  color: #0089cd;
 }
 
 .decoration_content {

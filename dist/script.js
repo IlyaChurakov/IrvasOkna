@@ -14013,9 +14013,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./src/js/modules/modal.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
-/* harmony import */ var _modules_slickTrack__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/slickTrack */ "./src/js/modules/slickTrack.js");
-/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
-/* harmony import */ var _modules_gallery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/gallery */ "./src/js/modules/gallery.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_gallery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/gallery */ "./src/js/modules/gallery.js");
+/* harmony import */ var _modules_tabsModals__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/tabsModals */ "./src/js/modules/tabsModals.js");
 
 
 
@@ -14026,10 +14026,10 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', () => {
   Object(_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])();
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])();
+  Object(_modules_tabsModals__WEBPACK_IMPORTED_MODULE_6__["default"])();
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])();
-  Object(_modules_slickTrack__WEBPACK_IMPORTED_MODULE_4__["default"])();
-  Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('2022-02-30');
-  Object(_modules_gallery__WEBPACK_IMPORTED_MODULE_6__["default"])();
+  Object(_modules_timer__WEBPACK_IMPORTED_MODULE_4__["default"])('2022-03-01');
+  Object(_modules_gallery__WEBPACK_IMPORTED_MODULE_5__["default"])();
 });
 
 /***/ }),
@@ -14069,7 +14069,6 @@ function forms() {
 
 
   const forms = document.querySelectorAll('.form');
-  console.log(forms);
   const message = {
     loading: 'Загрузка...',
     success: 'Спасибо! Скоро мы с вами свяжемся',
@@ -14102,12 +14101,10 @@ function forms() {
       const formData = new FormData(form),
             object = {},
             json = JSON.stringify(Object.fromEntries(formData.entries()));
-      console.log(json);
       formData.forEach((value, key) => {
         object[key] = value;
       });
-      postData('http://localhost:3000/requests', json).then(data => {
-        console.log(data);
+      postData('http://localhost:3000/requests', json).then(() => {
         statusMessage.textContent = message.success;
       }).catch(() => {
         statusMessage.textContent = message.failure;
@@ -14186,7 +14183,8 @@ function modal() {
         popup = document.querySelector('.popup');
   const id = setTimeout(() => {
     showModal(modalBg);
-  }, 500000);
+  }, 60000);
+  console.log();
 
   function showAndCloseModal(showBtnSelector, BgSelector) {
     showBtnSelector.addEventListener('click', e => {
@@ -14216,7 +14214,7 @@ function modal() {
 
   function closeModal(modalSelector) {
     modalSelector.style.display = 'none';
-    document.body.style.overflow = ''; // clearTimeout(id);
+    document.body.style.overflow = '';
   }
 
   showAndCloseModal(callSpecialistBtn, modalBg);
@@ -14226,49 +14224,6 @@ function modal() {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (modal);
-
-/***/ }),
-
-/***/ "./src/js/modules/slickTrack.js":
-/*!**************************************!*\
-  !*** ./src/js/modules/slickTrack.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function slickTrack() {
-  const tabItem = document.querySelectorAll('.decoration_item div'),
-        internal = document.querySelector('.decoration .internal'),
-        external = document.querySelector('.decoration .external'),
-        rising = document.querySelector('.decoration .rising'),
-        roof = document.querySelector('.decoration .roof');
-  tabItem.forEach((i, n) => {
-    i.addEventListener('click', () => {
-      tabItem.forEach(it => {
-        it.classList.remove('after_click');
-      });
-      i.classList.add('after_click');
-      internal.style.display = 'none';
-      external.style.display = 'none';
-      rising.style.display = 'none';
-      roof.style.display = 'none';
-
-      if (tabItem[0].classList.contains('after_click')) {
-        internal.style.display = 'block';
-      } else if (tabItem[1].classList.contains('after_click')) {
-        external.style.display = 'block';
-      } else if (tabItem[2].classList.contains('after_click')) {
-        rising.style.display = 'block';
-      } else if (tabItem[3].classList.contains('after_click')) {
-        roof.style.display = 'block';
-      }
-    });
-  });
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (slickTrack);
 
 /***/ }),
 
@@ -14285,50 +14240,97 @@ function tabs() {
   const img = document.querySelectorAll('.glazing_block'),
         a = document.querySelectorAll('.glazing a'),
         glazingContent = document.querySelectorAll('.glazing_content'),
-        popupCalc = document.querySelector('.popup_calc'),
-        btnCalc = document.querySelectorAll('.popup_calc_btn'),
-        width = document.querySelector('#width'),
-        height = document.querySelector('#height'),
-        formCalc = document.querySelector('#formCalc');
-  /*Переключение вида окон при нажатии на табы*/
+        elem = document.querySelectorAll('.decoration_item div'),
+        tabItem = document.querySelectorAll('.decoration_content-item'),
+        aElem = document.querySelectorAll('.decoration_item div a');
 
-  function activeTab(tapElem) {
-    tapElem.forEach((item, num) => {
-      item.addEventListener('click', () => {
-        a.forEach(it => {
-          it.classList.remove('active');
+  function activeTab(bar, content, cssClass) {
+    bar.forEach((item, num) => {
+      item.addEventListener('click', e => {
+        a.forEach(i => {
+          i.classList.remove(cssClass);
+          a[num].classList.add(cssClass);
+        }); //Для остекления
+
+        bar.forEach(i => {
+          i.classList.remove(cssClass);
+        }); //Для отделки
+
+        aElem.forEach(i => {
+          i.classList.remove(cssClass);
         });
-        a[num].classList.add('active');
-        glazingContent.forEach(i => {
+        item.classList.add(cssClass);
+
+        if (aElem[num]) {
+          aElem[num].classList.add(cssClass);
+        }
+
+        content.forEach(i => {
           i.style.display = 'none';
-          glazingContent[num].style.display = 'block';
+          content[num].style.display = 'block';
         });
       });
     });
   }
 
-  activeTab(img);
-  activeTab(a); //Объект, хранящий в себе данные с формы, которые будут отправлены на сервер
+  activeTab(img, glazingContent, 'active');
+  activeTab(a, glazingContent, 'active');
+  activeTab(elem, tabItem, 'after_click');
+}
 
+/* harmony default export */ __webpack_exports__["default"] = (tabs);
+
+/***/ }),
+
+/***/ "./src/js/modules/tabsModals.js":
+/*!**************************************!*\
+  !*** ./src/js/modules/tabsModals.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function tabsModals() {
+  //Объект, хранящий в себе данные с формы, которые будут отправлены на сервер
   let orderData = {// form: '',
     // width: '',
     // height: '',
     // type: '',
     // temp: ''
     //Туда будут записываться данные строки, но изначально объект пустой, также он чистится в конце
-  }; //Кнопки рассчета стоимости
+  };
+
+  function clickClosePopup(window, closeSelector, closeWindowSelector) {
+    window.addEventListener('click', e => {
+      const close = document.querySelector(closeSelector),
+            strong = close.querySelector('strong');
+
+      if (e.target == window || e.target == close || e.target == strong) {
+        closePopupCalc(closeWindowSelector);
+      }
+    });
+  }
+
+  function closePopupCalc(selector) {
+    document.querySelector(selector).style.cssText = 'display: none';
+  }
+
+  function showPopupCalc(selector) {
+    document.querySelector(selector).style.cssText = 'display: block';
+  } //Кнопки рассчета стоимости
+
+
+  const popupCalc = document.querySelector('.popup_calc'),
+        btnCalc = document.querySelectorAll('.popup_calc_btn'),
+        width = document.querySelector('#width'),
+        height = document.querySelector('#height'),
+        formCalc = document.querySelector('#formCalc'); // При нажатии на кнопку рассчета стоимости открывается 1-е модальное окно
 
   btnCalc.forEach(item => {
     item.addEventListener('click', () => {
       showPopupCalc('.popup_calc');
-      popupCalc.addEventListener('click', e => {
-        const close = document.querySelector('.popup_calc_close'),
-              strong = close.querySelector('strong');
-
-        if (e.target == popupCalc || e.target == close || e.target == strong) {
-          closePopupCalc('.popup_calc');
-        }
-      });
+      clickClosePopup(popupCalc, '.popup_calc_close', '.popup_calc');
       const windowForm = popupCalc.querySelectorAll('span img'),
             windowFormParent = popupCalc.querySelectorAll('span'),
             bigActiveForm = document.querySelectorAll('.popup_calc_content .big_img img');
@@ -14343,10 +14345,11 @@ function tabs() {
             bigActiveForm[num].style.display = 'block';
           });
         });
-      });
-      const topopupCalcProfile = document.querySelector('.popup_calc_button'),
-            checkboxes = document.querySelectorAll('.checkbox'); //Галочка только в одном чекбоксе
+      }); // Реализация табов в 1-м модальном окне
+      // Галочка только в одном чекбоксе
 
+      const toPopupCalcProfile = document.querySelector('.popup_calc_button'),
+            checkboxes = document.querySelectorAll('.checkbox');
       checkboxes.forEach((i, n) => {
         i.addEventListener('click', () => {
           checkboxes.forEach(item => {
@@ -14354,40 +14357,29 @@ function tabs() {
           });
           i.checked = 'checked';
         });
-      }); //Выбор типа окна
+      }); //Кнопка перехода ко 2-му окну
 
-      topopupCalcProfile.addEventListener('click', () => {
-        if (bigActiveForm[0].style.display == 'block') {
-          orderData.form = 'Форма 1';
-        } else if (bigActiveForm[1].style.display == 'block') {
-          orderData.form = 'Форма 2';
-        } else if (bigActiveForm[2].style.display == 'block') {
-          orderData.form = 'Форма 3';
-        } else if (bigActiveForm[3].style.display == 'block') {
-          orderData.form = 'Форма 4';
-        } // Regular(width, /\D/);
-
-
+      toPopupCalcProfile.addEventListener('click', () => {
+        bigActiveForm.forEach((item, num) => {
+          if (item.style.display == 'block') {
+            orderData.form = `Форма ${num + 1}`;
+          }
+        });
         orderData.width = width.value;
-        orderData.height = height.value;
+        orderData.height = height.value; // Записываем данные, выбранные пользователем, в объект
+
         closePopupCalc('.popup_calc');
         showPopupCalc('.popup_calc_profile');
         const popupCalcProfile = document.querySelector('.popup_calc_profile');
-        popupCalcProfile.addEventListener('click', e => {
-          const close = document.querySelector('.popup_calc_profile_close'),
-                strong = close.querySelector('strong');
+        const toPopupCalcEnd = document.querySelector('.popup_calc_profile_button');
+        clickClosePopup(popupCalcProfile, '.popup_calc_profile_close', '.popup_calc_profile'); // Переход на последнее окно, при нажатии на кнопку перехода мы собираем информацию с чекбоксов и списка выбора
 
-          if (e.target == popupCalcProfile || e.target == close || e.target == strong) {
-            closePopupCalc('.popup_calc_profile');
-          }
-        });
-        const topopupCalcEnd = document.querySelector('.popup_calc_profile_button');
-        topopupCalcEnd.addEventListener('click', () => {
+        toPopupCalcEnd.addEventListener('click', () => {
           closePopupCalc('.popup_calc_profile');
           showPopupCalc('.popup_calc_end');
           const viewType = document.getElementById("view_type").options.selectedIndex;
           const text = document.getElementById("view_type").options[viewType].text;
-          orderData.type = text;
+          orderData.type = text; // Записываем данные, выбранные пользователем, в объект
 
           if (checkboxes[0].checked) {
             orderData.temp = 'Холодное остекление';
@@ -14396,26 +14388,11 @@ function tabs() {
           }
 
           const popupCalcEnd = document.querySelector('.popup_calc_end');
-          popupCalcEnd.addEventListener('click', e => {
-            const close = document.querySelector('.popup_calc_end_close'),
-                  strong = close.querySelector('strong');
-
-            if (e.target == popupCalcEnd || e.target == close || e.target == strong) {
-              closePopupCalc('.popup_calc_end');
-            }
-          });
+          clickClosePopup(popupCalcEnd, '.popup_calc_end_close', '.popup_calc_end');
         });
       });
     });
-  });
-
-  function closePopupCalc(selector) {
-    document.querySelector(selector).style.cssText = 'display: none';
-  }
-
-  function showPopupCalc(selector) {
-    document.querySelector(selector).style.cssText = 'display: block';
-  }
+  }); // Добавление данных из объекта orderData в объект formData и отправка его на сервер
 
   const message = {
     loading: 'Загрузка...',
@@ -14445,11 +14422,11 @@ function tabs() {
       statusMessage.style.cssText = `
                 display: block;
                 margin: 30px auto 0 auto;
-            `;
+            `; // Перезапись formData, преобразование данных с формы и данных из нашего объекта в единый json
+
       const formData = new FormData(form),
             object = {},
-            //Преобразование данных с формы и данных из нашего объекта в единый json
-      json = JSON.stringify(Object.fromEntries(formData.entries())),
+            json = JSON.stringify(Object.fromEntries(formData.entries())),
             json2 = JSON.stringify(orderData),
             obj1 = JSON.parse(json),
             obj2 = JSON.parse(json2),
@@ -14459,7 +14436,8 @@ function tabs() {
             json4 = JSON.stringify(json3);
       formData.forEach((value, key) => {
         object[key] = value;
-      });
+      }); // Перезапись данных из object в formData, который ниже отправляем
+
       postData('http://localhost:3000/requests', json4).then(() => {
         statusMessage.textContent = message.success;
       }).catch(() => {
@@ -14469,7 +14447,7 @@ function tabs() {
 
         orderData = {}; //Очистка объекта
 
-        document.querySelectorAll('.checkbox').forEach((item, n) => {
+        document.querySelectorAll('.checkbox').forEach(item => {
           item.checked = '';
         }); //Очистка чекбоксов
 
@@ -14487,7 +14465,7 @@ function tabs() {
   bindPostOrderData(formCalc);
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (tabs);
+/* harmony default export */ __webpack_exports__["default"] = (tabsModals);
 
 /***/ }),
 
